@@ -65,11 +65,10 @@ def isfloat(num):
         return False
 
 #try to check for bad input
-
-GetPostFix(inp)
-numStack = []
-#calculate with the postfix equation
 try:
+    GetPostFix(inp)
+    numStack = []
+    #calculate with the postfix equation
     for i in range(len(stack)):
         if stack[i].isnumeric()==True or isfloat(stack[i])==True:
             numStack.append(float(stack[i]))
