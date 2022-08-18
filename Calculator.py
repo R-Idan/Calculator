@@ -76,6 +76,12 @@ try:
             a=numStack.pop()
             b=numStack.pop()
             numStack.append(allowed_operators[stack[i]](b,a))
-    print(numStack[-1])
+
+            
+    num = numStack[-1]
+    if num % 1 == 0:
+        print(int(numStack[-1]))
+    else:
+        print(numStack[-1])
 except:
     print("bad input")
