@@ -1,6 +1,8 @@
 import operator
 
-inp = input("Enter your equation: ")
+#inp = input("Enter your equation: ")
+inp="(22.4*33)+3*(4+7)*2.4"
+stack = []
 #Operators allowed
 allowed_operators={
     "+": operator.add,
@@ -18,47 +20,64 @@ def preced(ch):
         return 0
 #convert from normal equations(infix) to postfix for calculation
 def GetPostFix(inp):
+    global stack
     operatorStack = []
     operatorStack.append('#')
-    outStr=""
-
+    isNumber=False
+    count=0
     for i in inp:
-        if i.isnumeric()==True: 
-            outStr+=i
+        if i.isnumeric()==True or i=='.':
+            if(isNumber==True):
+                stack[len(stack)-1]+=i
+            else:
+                stack+=i
+                isNumber=True
         elif i=='(':
             operatorStack.append('(')
+            isNumber=False
         elif i ==')':
             while(operatorStack[-1]!='#' and operatorStack[-1] != '('):
-                outStr += operatorStack[-1]
+                stack.append(operatorStack[-1])
                 operatorStack.pop()
             operatorStack.pop()
+            isNumber=False
         else:
             
             if preced(i)>preced(operatorStack[-1]):
                 operatorStack.append(i)
+                isNumber=False
             else:
                 while operatorStack[-1]!='#' and preced(i)<= preced(operatorStack[-1]):
-                    outStr+=operatorStack[-1]
+                    stack.append(operatorStack[-1])
                     operatorStack.pop()
                 operatorStack.append(i)
+                isNumber=False
+
+        count=count+1
     while(operatorStack[-1]!='#'):
-        outStr+=operatorStack[-1]
+        stack.append(operatorStack[-1])
         operatorStack.pop()
-    return outStr
+
+def isfloat(num):
+    try:
+        float(num)
+        return True
+    except ValueError:
+        return False
 
 #try to check for bad input
+
+GetPostFix(inp)
+numStack = []
+#calculate with the postfix equation
 try:
-    postFixEquation = GetPostFix(inp)
-    numStack = []
-    #calculate with the postfix equation
-    for i in postFixEquation:
-        if i.isnumeric()==True:
-            numStack.append(int(i))
+    for i in range(len(stack)):
+        if stack[i].isnumeric()==True or isfloat(stack[i])==True:
+            numStack.append(float(stack[i]))
         else:
             a=numStack.pop()
             b=numStack.pop()
-            numStack.append(allowed_operators[i](b,a))
+            numStack.append(allowed_operators[stack[i]](b,a))
+    print(numStack[-1])
 except:
     print("bad input")
-finally:
-    print(numStack[-1])
