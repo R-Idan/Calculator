@@ -1,7 +1,6 @@
 import operator
 
-#inp = input("Enter your equation: ")
-inp="(22.4*33)+3*(4+7)*2.4"
+inp = input("Enter your equation: ")
 stack = []
 #Operators allowed
 allowed_operators={
