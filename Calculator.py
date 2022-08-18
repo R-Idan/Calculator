@@ -24,8 +24,21 @@ def GetPostFix(inp):
     operatorStack.append('#')
     isNumber=False
     count=0
+    #convert negative numbers from -number to _number for calculation later
+    isEligible=True
     for i in inp:
-        if i.isnumeric()==True or i=='.':
+        if i!='-':
+            isEligible=False
+        elif count+1<len(inp)and (inp[count+1]=='+' or inp[count+1]=='/' or inp[count+1]=='*' or inp[count+1]=='-'):
+            isEligible=False
+        if count==0 or inp[count-1]=='(' or inp[count-1]=='+' or inp[count-1]=='/' or inp[count-1]=='*' or inp[count-1]=='-':
+            if isEligible==True:
+                inp = inp[:count] + '_' + inp[count+1:]
+        isEligible=True
+        count=count+1
+    count=0
+    for i in inp:
+        if i.isnumeric()==True or i=='.' or i=='_':
             if(isNumber==True):
                 stack[len(stack)-1]+=i
             else:
@@ -41,7 +54,6 @@ def GetPostFix(inp):
             operatorStack.pop()
             isNumber=False
         else:
-            
             if preced(i)>preced(operatorStack[-1]):
                 operatorStack.append(i)
                 isNumber=False
@@ -68,15 +80,17 @@ def isfloat(num):
 try:
     GetPostFix(inp)
     numStack = []
+    for i in range(len(stack)):
+        stack[i]=stack[i].replace('_','-')
+
     #calculate with the postfix equation
     for i in range(len(stack)):
-        if stack[i].isnumeric()==True or isfloat(stack[i])==True:
+        if stack[i].isnumeric()==True or isfloat(stack[i])==True or (stack[i][0]=='-' and stack[i][1:].isnumeric()==True) :
             numStack.append(float(stack[i]))
         else:
             a=numStack.pop()
             b=numStack.pop()
             numStack.append(allowed_operators[stack[i]](b,a))
-
             
     num = numStack[-1]
     if num % 1 == 0:
